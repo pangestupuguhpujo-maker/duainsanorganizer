@@ -15,4 +15,6 @@ export async function runMigrations() {
   }
 }
 
-runMigrations();
+if (process.argv[1] && process.argv[1].includes('migrate')) {
+  runMigrations();
+}

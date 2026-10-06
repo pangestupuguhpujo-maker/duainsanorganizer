@@ -593,7 +593,9 @@ export async function seed() {
   console.log('Default Development Admin: admin@duainsanorganizer.com / AdminDuaInsan2026!');
 }
 
-seed().catch((err) => {
-  console.error('Seeding failed:', err);
-  process.exit(1);
-});
+if (process.argv[1] && process.argv[1].includes('seed')) {
+  seed().catch((err) => {
+    console.error('Seeding failed:', err);
+    process.exit(1);
+  });
+}
