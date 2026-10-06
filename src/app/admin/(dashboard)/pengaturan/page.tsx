@@ -2,6 +2,8 @@ import * as React from 'react';
 import { db } from '@/server/db';
 import { siteSettings } from '@/server/db/schema';
 import { updateSiteSettingsAction } from '@/server/actions/admin.actions';
+import { requireAdmin } from '@/server/auth/guard';
+import { AdminCredentialsCard } from '@/components/features/admin/AdminCredentialsCard';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
@@ -9,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPengaturanPage() {
+  const admin = await requireAdmin();
   const allSettings = await db.select().from(siteSettings);
   const settingsMap: Record<string, string> = {};
 
@@ -17,17 +20,29 @@ export default async function AdminPengaturanPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-8 max-w-4xl">
       <div>
         <h1 className="font-serif text-2xl sm:text-3xl text-brand-forest font-normal">
-          Pengaturan Situs & Kontak
+          Pengaturan Akun & Kontak
         </h1>
         <p className="text-sm text-brand-muted mt-1">
-          Ubah informasi kontak, nomor WhatsApp resmi, dan alamat operasional website.
+          Kelola kredensial akun administrator serta informasi kontak resmi website.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl border border-brand-border p-6 sm:p-8 shadow-xs">
+      {/* 1. Keamanan Akun Administrator (Ganti Email & Password) */}
+      <AdminCredentialsCard currentEmail={admin.email} />
+
+      {/* 2. Pengaturan Kontak & Operasional */}
+      <div className="bg-white rounded-xl border border-brand-border p-6 sm:p-8 shadow-xs space-y-6">
+        <div>
+          <h2 className="font-serif text-xl text-brand-forest font-normal">
+            Kontak Resmi & Alamat
+          </h2>
+          <p className="text-xs text-brand-muted">
+            Informasi kontak ini otomatis diperbarui pada tombol WhatsApp dan bagian kontak website.
+          </p>
+        </div>
         <form action={updateSiteSettingsAction} className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
